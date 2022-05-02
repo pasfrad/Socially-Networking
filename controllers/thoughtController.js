@@ -11,6 +11,7 @@ module.exports = {
   getSingleThought(req, res) {
     Thought.findOne({ _id: req.params.thoughtId })
       .select('-__v')
+      .populate({ path: 'reactions', select: '-__v' })
       .then((thought) =>
         !thought
           ? res.status(404).json({ message: 'No thought with that ID' })
@@ -43,7 +44,7 @@ module.exports = {
     )
       .then((thought) =>
         !thought
-          ? res.status(404).json({ message: 'Something went wrong' })
+          ? res.status(404).json({ message: 'No thought with this ID' })
           : res.json(thought)
       )
       .catch((err) => res.status(500).json(err))
