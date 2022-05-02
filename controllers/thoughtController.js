@@ -7,6 +7,7 @@ module.exports = {
       .then((thoughts) => res.json(thoughts))
       .catch((err) => res.status(500).json(err));
   },
+
   getSingleThought(req, res) {
     Thought.findOne({ _id: req.params.thoughtId })
       .select('-__v')
@@ -17,16 +18,28 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
+
   createThought(req, res) {
-    // console.log('You are adding a thought');
-    // console.log(req.body);
     Thought.create(req.body)
-    //make this route so it creates a thought and adds it to the user's thoughts array
+      .then((thought) => {
+        User.findOneAndUpdate(
+          { _id: req.body.user },
+          { $push: { thoughts: thought._id } },
+        ).then((user) => {
+          console.log(user)
+        });
+        res.json(thought);
+      })
+      .catch((err) => {
+        return res.status(200).json(err);
+      })
   },
+
   updateThought(req, res) {
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
-      { $set: req.body }
+      { $set: req.body },
+      { runValidator: true, new: true }
     )
       .then((thought) =>
         !thought
@@ -35,41 +48,34 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err))
   },
+
   deleteThought(req, res) {
     Thought.findOneAndDelete({ _id: req.params.thoughtId })
-      // .then((thought) =>
-      //   !thought
-      //     ? res.status(404).json({ message: 'No thought with that ID' })
-      //     : Thought.deleteMany({ _id: { $in: user.thoughts } })
-      // )
-      .then(() => res.json({ message: 'User and thoughts deleted!' }))
+      .then(() => res.json({ message: 'Thought deleted!' }))
+      .catch((err) => res.status(500).json(err));
+  },
+
+  addReaction(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: ObjectId(req.params.thoughtId) },
+      { $addToSet: { reactions: req.body } },
+      { runValidators: true, new: true }
+    ).then(thought =>
+        !thought
+          ? res.status(404).json({ message: 'No thought with this ID' })
+          : res.status(200).json(thought))
+      .catch((err) => res.status(500).json(err));
+  },
+
+  removeReaction(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { reactionId: req.params.reactionId } } },
+    ).then((thought) =>
+        !thought
+          ? res.status(404).json({ message: 'No reaction with this ID' })
+          : res.json(thought))
       .catch((err) => res.status(500).json(err));
   },
 
 }
-
-// Aggregate function to get the number of students overall
-// const allReactionsCount = async () =>
-//   Thought.aggregate()
-//     .count('reactionCount')
-//     .then((numberOfReactions) => numberOfReactions);
-
-
-
-
-  // Get all students
-  // getThoughts(req, res) {
-  //   Thought.find()
-  //     .then(async (students) => {
-  //       const studentObj = {
-  //         students,
-  //         allReactionsCount: await allReactionsCount(),
-  //       };
-  //       return res.json(studentObj);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       return res.status(500).json(err);
-  //     });
-  // },
-  // 
