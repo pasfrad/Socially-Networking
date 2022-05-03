@@ -2,13 +2,11 @@
 
 ## Table of Contents
 
-- [Pictures](#pictures)
 - [Description](#description)
 - [License](#license)
 - [Installation](#installation)
 - [Usage](#usage)
-
-## Pictures
+- [Video Demonstration](#video-demonstration)
 
 ## Description
 
@@ -29,6 +27,7 @@ The application is not deployed, but may be used by anyone who clones the reposi
 As the application has no front end, it can only be used through Insomnia.
 
 ## Video Demonstration
+https://youtu.be/dxy61dJIvG0
 
 ## For Questions
 email: rd.hart@outlook.com
