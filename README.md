@@ -28,7 +28,7 @@ The application is not deployed, but may be used by anyone who clones the reposi
 
 As the application has no front end, it can only be used through Insomnia.
 
-## Deployed Application
+## Video Demonstration
 
 ## For Questions
 email: rd.hart@outlook.com
